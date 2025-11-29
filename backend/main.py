@@ -5,6 +5,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import logging
+from backend.config import settings
 
 # Configuración de logging
 logging.basicConfig(level=logging.INFO)
@@ -51,15 +52,11 @@ def read_root():
 @app.get("/status")
 def get_status():
     # Aquí se verificaría el estado de la DB, Redis, etc.
-    return {"status": "ok", "db_connection": "simulated_ok", "redis_connection": "simulated_ok"}
+    return {"status": "ok", "environment": settings.ENVIRONMENT, "db_connection": "simulated_ok", "redis_connection": "simulated_ok"}
 
-# Incluir routers de API (simulados)
-# from backend.api.v1 import solar, mental_health, correlation, prediction, alerts
-# app.include_router(solar.router, prefix="/api/v1/solar", tags=["solar"])
-# app.include_router(mental_health.router, prefix="/api/v1/mental", tags=["mental_health"])
-# app.include_router(correlation.router, prefix="/api/v1/correlation", tags=["correlation"])
-# app.include_router(prediction.router, prefix="/api/v1/predict", tags=["prediction"])
-# app.include_router(alerts.router, prefix="/api/v1/alerts", tags=["alerts"])
+# Incluir routers de API
+from backend.api.v1 import solar
+app.include_router(solar.router, prefix="/api/v1/solar", tags=["solar"])
 
 # Si se ejecuta como script (para CLI commands)
 if __name__ == "__main__":
@@ -72,4 +69,4 @@ if __name__ == "__main__":
         # Lógica de CLI aquí
     else:
         import uvicorn
-        uvicorn.run(app, host="0.0.0.0", port=8000)
+        uvicorn.run(app, host="0.0.0.0", port=settings.BACKEND_PORT)
