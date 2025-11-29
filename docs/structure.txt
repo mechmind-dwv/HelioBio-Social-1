@@ -1,0 +1,331 @@
+HelioBio-Social/
+│
+├── 📄 README.md                          # Manifiesto épico (¡ya lo tienes!)
+├── 📜 LICENSE                            # MIT - Ciencia abierta
+├── 🔧 .env.example                       # Template de configuración
+├── 🐳 docker-compose.yml                 # Deploy en un comando
+├── ⚡ quickstart.sh                      # Setup automático
+│
+├── 📚 docs/                              # Documentación completa
+│   ├── INSTALLATION.md                   # Guía de instalación paso a paso
+│   ├── API_REFERENCE.md                  # Documentación de API REST
+│   ├── SCIENTIFIC_METHOD.md              # Metodología científica detallada
+│   ├── DATA_SOURCES.md                   # Catálogo de fuentes de datos
+│   ├── CONTRIBUTING.md                   # Guía para contribuir
+│   ├── CODE_OF_CONDUCT.md                # Código ético
+│   ├── CHANGELOG.md                      # Historial de versiones
+│   └── papers/                           # Papers científicos
+│       ├── chizhevsky_effect_2025.pdf
+│       └── methodology_v1.0.pdf
+│
+├── 🔬 backend/                           # Núcleo del sistema (Python)
+│   ├── 📦 requirements.txt               # Dependencias Python
+│   ├── 🐍 main.py                        # FastAPI entry point
+│   ├── ⚙️ config.py                      # Configuración global
+│   ├── 🗄️ database.py                    # Conexión PostgreSQL
+│   │
+│   ├── 🌐 api/                           # Endpoints REST
+│   │   ├── __init__.py
+│   │   ├── v1/
+│   │   │   ├── __init__.py
+│   │   │   ├── solar.py                 # GET /api/v1/solar/current
+│   │   │   ├── mental_health.py         # GET /api/v1/mental/global
+│   │   │   ├── correlation.py           # GET /api/v1/correlation/analyze
+│   │   │   ├── prediction.py            # GET /api/v1/predict/7days
+│   │   │   └── alerts.py                # GET /api/v1/alerts/active
+│   │   └── middleware/
+│   │       ├── rate_limiter.py          # Control de rate limiting
+│   │       ├── cache.py                 # Redis caching
+│   │       └── auth.py                  # API key authentication
+│   │
+│   ├── 🔌 connectors/                    # Integraciones con APIs externas
+│   │   ├── __init__.py
+│   │   ├── solar/
+│   │   │   ├── noaa_swpc.py            # NOAA Space Weather
+│   │   │   ├── nasa_donki.py           # NASA DONKI (CME)
+│   │   │   └── esa_spaceweather.py     # ESA Space Weather
+│   │   ├── health/
+│   │   │   ├── who_gho.py              # WHO Global Health Observatory
+│   │   │   ├── cdc_wonder.py           # CDC WONDER mortality data
+│   │   │   ├── ihme_gbd.py             # IHME Global Burden of Disease
+│   │   │   └── eurostat.py             # Eurostat health data
+│   │   └── social/
+│   │       ├── google_trends.py        # Google Trends API
+│   │       ├── reddit_api.py           # Reddit PRAW
+│   │       └── twitter_academic.py     # Twitter Academic API
+│   │
+│   ├── 🧮 analytics/                     # Motor de correlación
+│   │   ├── __init__.py
+│   │   ├── correlation_engine.py       # Correlación Pearson/Spearman
+│   │   ├── granger_causality.py        # Test de causalidad de Granger
+│   │   ├── wavelet_analysis.py         # Análisis Wavelet (periodicidades)
+│   │   ├── transfer_entropy.py         # Flujo de información Sol→Mente
+│   │   └── statistical_tests.py        # Bootstrap, FDR, t-tests
+│   │
+│   ├── 🤖 ml/                            # Machine Learning
+│   │   ├── __init__.py
+│   │   ├── models/
+│   │   │   ├── lstm_predictor.py       # LSTM para predicción temporal
+│   │   │   ├── random_forest.py        # Clasificación de eventos
+│   │   │   └── transformer.py          # Transformer para series temporales
+│   │   ├── training/
+│   │   │   ├── train_lstm.py
+│   │   │   ├── train_rf.py
+│   │   │   └── hyperparameter_tuning.py
+│   │   ├── evaluation/
+│   │   │   ├── metrics.py              # MAE, RMSE, R²
+│   │   │   └── validation.py           # Cross-validation
+│   │   └── saved_models/               # Modelos entrenados (.h5, .pkl)
+│   │       ├── lstm_v1.0.h5
+│   │       └── rf_v1.0.pkl
+│   │
+│   ├── 💾 database/                      # Gestión de datos
+│   │   ├── __init__.py
+│   │   ├── models/
+│   │   │   ├── solar_data.py           # ORM para datos solares
+│   │   │   ├── mental_health_data.py   # ORM para salud mental
+│   │   │   └── correlation_results.py  # ORM para resultados
+│   │   ├── migrations/                 # Alembic migrations
+│   │   │   ├── versions/
+│   │   │   └── alembic.ini
+│   │   ├── seeds/                      # Datos iniciales
+│   │   │   └── historical_data.sql
+│   │   └── timescale_setup.sql         # Setup TimescaleDB
+│   │
+│   ├── 📊 reports/                       # Generación de reportes
+│   │   ├── __init__.py
+│   │   ├── pdf_generator.py            # Reportes PDF científicos
+│   │   ├── csv_exporter.py             # Export datasets
+│   │   └── templates/
+│   │       ├── scientific_report.html
+│   │       └── executive_summary.html
+│   │
+│   ├── 🚨 alerts/                        # Sistema de alertas
+│   │   ├── __init__.py
+│   │   ├── alert_engine.py             # Detección de eventos
+│   │   ├── notifications.py            # Email/SMS/Push
+│   │   └── rules/
+│   │       ├── high_kp_alert.py
+│   │       └── correlation_spike.py
+│   │
+│   └── 🧪 tests/                         # Tests unitarios e integración
+│       ├── __init__.py
+│       ├── test_connectors/
+│       ├── test_analytics/
+│       ├── test_ml/
+│       └── test_api/
+│
+├── 🎨 frontend/                          # Dashboard web (React)
+│   ├── 📦 package.json
+│   ├── ⚛️ src/
+│   │   ├── App.tsx                      # Componente principal
+│   │   ├── index.tsx                    # Entry point
+│   │   │
+│   │   ├── 📱 pages/                    # Páginas/vistas
+│   │   │   ├── Dashboard.tsx            # Vista principal
+│   │   │   ├── ScientificAnalysis.tsx   # Análisis profundo
+│   │   │   ├── RealTimeMonitor.tsx      # Monitor en tiempo real
+│   │   │   ├── HistoricalData.tsx       # Explorador histórico
+│   │   │   ├── Predictions.tsx          # Predicciones ML
+│   │   │   ├── Settings.tsx             # Configuración
+│   │   │   └── About.tsx                # Sobre el proyecto
+│   │   │
+│   │   ├── 🧩 components/               # Componentes reutilizables
+│   │   │   ├── charts/
+│   │   │   │   ├── CorrelationChart.tsx
+│   │   │   │   ├── TimeSeriesChart.tsx
+│   │   │   │   ├── HeatmapChart.tsx
+│   │   │   │   ├── WaveletScalogram.tsx
+│   │   │   │   └── RadarChart.tsx
+│   │   │   ├── widgets/
+│   │   │   │   ├── SolarActivityWidget.tsx
+│   │   │   │   ├── MentalHealthWidget.tsx
+│   │   │   │   ├── CorrelationWidget.tsx
+│   │   │   │   └── AlertWidget.tsx
+│   │   │   ├── layout/
+│   │   │   │   ├── Header.tsx
+│   │   │   │   ├── Sidebar.tsx
+│   │   │   │   └── Footer.tsx
+│   │   │   └── common/
+│   │   │       ├── Button.tsx
+│   │   │       ├── Card.tsx
+│   │   │       ├── Modal.tsx
+│   │   │       └── Loader.tsx
+│   │   │
+│   │   ├── 🔧 services/                 # Servicios frontend
+│   │   │   ├── api.ts                   # Cliente API REST
+│   │   │   ├── websocket.ts             # WebSocket real-time
+│   │   │   └── storage.ts               # LocalStorage manager
+│   │   │
+│   │   ├── 🎭 hooks/                    # Custom React hooks
+│   │   │   ├── useSolarData.ts
+│   │   │   ├── useMentalHealthData.ts
+│   │   │   ├── useCorrelation.ts
+│   │   │   └── useRealTimeUpdates.ts
+│   │   │
+│   │   ├── 🗂️ store/                    # State management (Redux)
+│   │   │   ├── store.ts
+│   │   │   ├── slices/
+│   │   │   │   ├── solarSlice.ts
+│   │   │   │   ├── mentalHealthSlice.ts
+│   │   │   │   └── uiSlice.ts
+│   │   │   └── middleware/
+│   │   │       └── apiMiddleware.ts
+│   │   │
+│   │   ├── 🎨 styles/                   # Estilos CSS
+│   │   │   ├── globals.css
+│   │   │   ├── variables.css
+│   │   │   └── themes/
+│   │   │       ├── dark.css
+│   │   │       └── light.css
+│   │   │
+│   │   └── 🛠️ utils/                    # Utilidades
+│   │       ├── formatters.ts            # Formateo de datos
+│   │       ├── validators.ts            # Validaciones
+│   │       └── constants.ts             # Constantes
+│   │
+│   ├── 📁 public/                       # Assets estáticos
+│   │   ├── index.html
+│   │   ├── favicon.ico
+│   │   ├── logo.svg
+│   │   └── images/
+│   │       ├── solar-activity.png
+│   │       └── brain-network.png
+│   │
+│   └── 🧪 tests/                        # Tests frontend
+│       ├── unit/
+│       ├── integration/
+│       └── e2e/
+│
+├── 📊 analysis/                          # Análisis científico (Jupyter)
+│   ├── notebooks/
+│   │   ├── 01_exploratory_data_analysis.ipynb
+│   │   ├── 02_correlation_analysis.ipynb
+│   │   ├── 03_granger_causality.ipynb
+│   │   ├── 04_wavelet_analysis.ipynb
+│   │   ├── 05_machine_learning_predictions.ipynb
+│   │   └── 06_final_report_generation.ipynb
+│   │
+│   ├── scripts/                         # Scripts de análisis batch
+│   │   ├── batch_correlation.py
+│   │   ├── historical_analysis.py
+│   │   └── generate_plots.py
+│   │
+│   └── results/                         # Resultados de análisis
+│       ├── plots/
+│       ├── tables/
+│       └── reports/
+│
+├── 📦 data/                              # Almacenamiento de datos
+│   ├── raw/                             # Datos crudos (no procesados)
+│   │   ├── solar/
+│   │   │   ├── noaa_kp_2020_2025.csv
+│   │   │   └── nasa_ssn_2020_2025.csv
+│   │   ├── health/
+│   │   │   ├── who_mental_health.csv
+│   │   │   └── cdc_suicide_rates.csv
+│   │   └── social/
+│   │       ├── google_trends_anxiety.csv
+│   │       └── reddit_depression_posts.csv
+│   │
+│   ├── processed/                       # Datos procesados
+│   │   ├── merged_timeseries.csv
+│   │   └── correlation_matrix.csv
+│   │
+│   ├── cache/                           # Cache temporal
+│   │   └── .gitkeep
+│   │
+│   └── exports/                         # Exports para usuarios
+│       └── heliobio_dataset_v1.0.zip
+│
+├── 🗄️ database/                         # Base de datos
+│   ├── postgres/                        # PostgreSQL + TimescaleDB
+│   │   ├── init.sql
+│   │   └── schema.sql
+│   └── redis/                           # Redis para caché
+│       └── redis.conf
+│
+├── 🐳 docker/                           # Configuración Docker
+│   ├── Dockerfile.backend
+│   ├── Dockerfile.frontend
+│   ├── Dockerfile.jupyter
+│   └── nginx.conf
+│
+├── 🚀 deployment/                       # Scripts de deploy
+│   ├── kubernetes/
+│   │   ├── backend-deployment.yaml
+│   │   ├── frontend-deployment.yaml
+│   │   └── database-deployment.yaml
+│   ├── terraform/
+│   │   ├── main.tf
+│   │   └── variables.tf
+│   └── scripts/
+│       ├── deploy_production.sh
+│       └── backup_database.sh
+│
+├── 🔐 secrets/                          # Secretos (NO COMMITAR)
+│   ├── .env.development
+│   ├── .env.production
+│   └── api_keys.txt
+│
+├── 📱 mobile/                           # App móvil (futuro)
+│   └── README.md                        # "Coming soon"
+│
+├── 🌐 public-api/                       # API pública documentada
+│   ├── openapi.yaml                     # Especificación OpenAPI
+│   └── postman_collection.json
+│
+└── 🎓 education/                        # Material educativo
+    ├── workshops/
+    │   ├── introduction_to_heliobiology.pdf
+    │   └── hands_on_tutorial.md
+    ├── videos/
+    │   └── demo_walkthrough.mp4
+    └── presentations/
+        └── heliobio_summit_2025.pptx
+
+
+# ═══════════════════════════════════════════════════════════════
+# ARCHIVOS DE CONFIGURACIÓN RAÍZ
+# ═══════════════════════════════════════════════════════════════
+
+├── .gitignore                           # Git ignore
+├── .dockerignore                        # Docker ignore
+├── .github/                             # GitHub Actions
+│   └── workflows/
+│       ├── ci.yml                       # Tests automáticos
+│       ├── deploy.yml                   # Deploy automático
+│       └── codeql.yml                   # Análisis de seguridad
+│
+├── pyproject.toml                       # Configuración Python
+├── pytest.ini                           # Configuración pytest
+├── mypy.ini                             # Type checking
+├── .eslintrc.js                         # Linting frontend
+├── tsconfig.json                        # TypeScript config
+└── codecov.yml                          # Code coverage
+
+
+# ═══════════════════════════════════════════════════════════════
+# ESTADÍSTICAS DEL PROYECTO
+# ═══════════════════════════════════════════════════════════════
+
+Total de Archivos: ~150+
+Líneas de Código Estimadas: ~50,000
+Tecnologías Core:
+  - Backend: Python 3.9+, FastAPI, PostgreSQL, Redis
+  - Frontend: React 18+, TypeScript, Redux, Recharts
+  - ML: TensorFlow, PyTorch, scikit-learn
+  - Análisis: Pandas, NumPy, SciPy, Statsmodels
+  - Deploy: Docker, Kubernetes, Nginx
+
+APIs Integradas: 10+
+  - NOAA SWPC
+  - NASA DONKI
+  - WHO GHO
+  - CDC WONDER
+  - IHME GBD
+  - Eurostat
+  - Google Trends
+  - Reddit PRAW
+  - Twitter Academic
+  - ESA Space Weather
