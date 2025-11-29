@@ -55,8 +55,9 @@ def get_status():
     return {"status": "ok", "environment": settings.ENVIRONMENT, "db_connection": "simulated_ok", "redis_connection": "simulated_ok"}
 
 # Incluir routers de API
-from backend.api.v1 import solar
+from backend.api.v1 import solar, mental_health
 app.include_router(solar.router, prefix="/api/v1/solar", tags=["solar"])
+app.include_router(mental_health.router, prefix="/api/v1/mental", tags=["mental_health"])
 
 # Si se ejecuta como script (para CLI commands)
 if __name__ == "__main__":
