@@ -1,0 +1,109 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:13
+    env_file: .env
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER:-heliobio}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-heliobio_pass}"
+      POSTGRES_DB: "${POSTGRES_DB:-heliobio_db}"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./database/postgres/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-heliobio} -d ${POSTGRES_DB:-heliobio_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - heliobio
+
+  redis:
+    image: redis:6-alpine
+    command: ["redis-server", "--save", "60", "1", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - heliobio
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.backend
+    env_file: .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app:delegated
+      - ./data:/app/data:delegated
+    ports:
+      - "8000:8000"
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    networks:
+      - heliobio
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.frontend
+    env_file: .env
+    volumes:
+      - ./frontend:/usr/src/app:delegated
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - heliobio
+
+  jupyter:
+    image: jupyter/datascience-notebook:latest
+    env_file: .env
+    volumes:
+      - ./analysis:/home/jovyan/work
+      - ./data:/home/jovyan/data:ro
+    ports:
+      - "8888:8888"
+    restart: unless-stopped
+    networks:
+      - heliobio
+
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - backend
+    restart: unless-stopped
+    networks:
+      - heliobio
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  heliobio:
+    driver: bridge
