@@ -1,0 +1,36 @@
+# Ignorar archivos de configuración de entorno
+.env
+.env.*
+secrets/
+
+# Ignorar directorios de dependencias
+/backend/venv/
+/frontend/node_modules/
+
+# Ignorar archivos de compilación y caché
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+/frontend/build/
+/frontend/dist/
+
+# Ignorar archivos de datos grandes y modelos entrenados
+/data/raw/
+/data/processed/
+/data/cache/
+/backend/ml/saved_models/
+
+# Ignorar archivos de Jupyter Notebook
+.ipynb_checkpoints
+
+# Ignorar archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar logs
+*.log
+
+# Ignorar archivos de Docker
+*.swp
+*.swo
