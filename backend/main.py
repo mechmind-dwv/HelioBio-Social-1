@@ -3,7 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from datetime import datetime
 
-from backend.api.v1 import solar, mental_health
+# Importar módulos directamente sin el prefijo 'backend.'
+from api.v1 import solar, mental_health
 
 app = FastAPI(
     title="HelioBio-Social API",
@@ -31,11 +32,11 @@ async def root():
         "status": "operational",
         "timestamp": datetime.utcnow().isoformat(),
         "endpoints": {
+            "health": "/health",
             "solar_current": "/api/v1/solar/current",
-            "solar_forecast": "/api/v1/solar/forecast", 
-            "mental_global": "/api/v1/mental/global",
-            "correlation": "/api/v1/mental/correlation",
-            "docs": "/docs"
+            "mental_global": "/api/v1/mental/global", 
+            "docs": "/docs",
+            "redoc": "/redoc"
         }
     }
 
@@ -44,7 +45,8 @@ async def health_check():
     return {
         "status": "healthy",
         "service": "heliobio-backend",
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.utcnow().isoformat(),
+        "version": "3.0.0"
     }
 
 if __name__ == "__main__":

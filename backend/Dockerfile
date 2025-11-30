@@ -9,14 +9,17 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copiar requirements primero (para cache de Docker)
+# Copiar requirements primero
 COPY requirements.txt .
 
 # Instalar dependencias Python
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiar código de la aplicación
+# Copiar código
 COPY . .
+
+# Configurar Python path
+ENV PYTHONPATH=/app
 
 # Crear directorios necesarios
 RUN mkdir -p /app/data /app/logs
