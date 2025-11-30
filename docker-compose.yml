@@ -3,17 +3,16 @@ version: "3.8"
 services:
   postgres:
     image: postgres:13
-    env_file: .env
     environment:
-      POSTGRES_USER: "${POSTGRES_USER:-heliobio}"
-      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-heliobio_pass}"
-      POSTGRES_DB: "${POSTGRES_DB:-heliobio_db}"
+      POSTGRES_USER: "heliobio"
+      POSTGRES_PASSWORD: "heliobio_pass"
+      POSTGRES_DB: "heliobio_db"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./database/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
-      - ./database/postgres/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    ports:
+      - "1111:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-heliobio} -d ${POSTGRES_DB:-heliobio_db}"]
+      test: ["CMD-SHELL", "pg_isready -U heliobio -d heliobio_db"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -23,9 +22,11 @@ services:
 
   redis:
     image: redis:6-alpine
-    command: ["redis-server", "--save", "60", "1", "--appendonly", "yes"]
+    command: ["redis-server", "--appendonly", "yes"]
     volumes:
       - redis_data:/data
+    ports:
+      - "1112:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -38,8 +39,10 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile.backend
-    env_file: .env
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://heliobio:heliobio_pass@postgres:5432/heliobio_db
+      - REDIS_URL=redis://redis:6379
     depends_on:
       postgres:
         condition: service_healthy
@@ -47,10 +50,8 @@ services:
         condition: service_healthy
     volumes:
       - ./backend:/app:delegated
-      - ./data:/app/data:delegated
     ports:
-      - "8000:8000"
-    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+      - "1110:8000"
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
@@ -63,38 +64,13 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.frontend
-    env_file: .env
+      dockerfile: Dockerfile
     volumes:
       - ./frontend:/usr/src/app:delegated
+      - /usr/src/app/node_modules
     ports:
-      - "3000:3000"
+      - "1113:3000"
     depends_on:
-      - backend
-    restart: unless-stopped
-    networks:
-      - heliobio
-
-  jupyter:
-    image: jupyter/datascience-notebook:latest
-    env_file: .env
-    volumes:
-      - ./analysis:/home/jovyan/work
-      - ./data:/home/jovyan/data:ro
-    ports:
-      - "8888:8888"
-    restart: unless-stopped
-    networks:
-      - heliobio
-
-  nginx:
-    image: nginx:stable-alpine
-    ports:
-      - "80:80"
-    volumes:
-      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
-    depends_on:
-      - frontend
       - backend
     restart: unless-stopped
     networks:
